@@ -280,7 +280,7 @@
 </div>
 <script>
 // ✏️ วาง URL ของ Google Apps Script Web App ที่นี่ (ดูคำแนะนำด้านล่าง)
-const SHEETS_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxCe4AZhT7tfxrcsOrJYStHN2fm-SAFwigi51s6MI-TV1qKVRbkQ_ZxM8sinhfD5KK7eQ/exec';
 // ✏️ เปลี่ยนรหัสผ่าน Admin ตามต้องการ
 const ADMIN_PASSWORD = 'lpk1234567';
 const questions = [
@@ -457,13 +457,18 @@ function hideStatus() {
 async function saveToSheets(record) {
   try {
     setStatus('syncing', '');
-    const response = await fetch(SHEETS_URL, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: JSON.stringify(record)
+    // ใช้ GET + query string เพื่อหลีกเลี่ยง CORS preflight
+    const params = new URLSearchParams({
+      action    : 'save',
+      createdAt : record.createdAt || '',
+      date      : record.date      || '',
+      gender    : record.gender    || '',
+      grade     : record.grade     || '',
+      score     : record.score     || 0,
+      level     : record.level     || ''
     });
-    const contentType = response.headers.get('content-type') || '';
-    const result = contentType.includes('application/json') ? await response.json() : { status: 'error', message: await response.text() };
+    const response = await fetch(`${SHEETS_URL}?${params}`, { method: 'GET', cache: 'no-store' });
+    const result = await response.json();
     if (!response.ok || result.status !== 'success') {
       throw new Error(result.message || 'ไม่สามารถบันทึกข้อมูลได้');
     }
