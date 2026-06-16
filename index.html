@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แบบประเมินสุขภาพจิต ST-20 | โรงเรียน</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap');
+  :root {
+    --primary: #2D6A4F;
+    --primary-light: #52B788;
+    --accent: #74C69D;
+    --soft: #B7E4C7;
+    --bg: #F8FBF9;
+    --card: #FFFFFF;
+    --text: #1B2B1F;
+    --muted: #5A7A65;
+    --border: #D8EDE2;
+    --danger: #E63946;
+    --warning: #F4A261;
+    --yellow: #F9C74F;
+    --green: #52B788;
+    --radius: 14px;
+    --shadow: 0 4px 24px rgba(45,106,79,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { min-height: 100%; }
+  body { font-family: 'Sarabun','Noto Sans Thai',sans-serif; background: var(--bg); color: var(--text); }
+  .header { background: linear-gradient(135deg,var(--primary) 0%,#1B4332 100%); color: white; padding: 34px 22px 28px; text-align: center; position: relative; overflow: hidden; }
+  .header::before { content:''; position:absolute; inset:0; background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2374C69D' fill-opacity='0.08'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events:none; }
+  .header-icon { font-size:48px; margin-bottom:10px; }
+  .header h1 { font-size:1.52rem; font-weight:700; margin-bottom:6px; }
+  .header .subtitle { font-size:0.95rem; opacity:0.9; margin-bottom:8px; }
+  .header .note { font-size:0.82rem; opacity:0.8; background:rgba(255,255,255,0.12); border-radius:8px; padding:10px 14px; display:inline-block; margin-top:8px; }
+  .container { max-width:760px; margin:0 auto; padding:24px 18px 80px; }
+  .card { background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:20px; border:1px solid var(--border); }
+  .card-title { font-size:1.05rem; font-weight:700; color:var(--primary); margin-bottom:16px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+  .card-title span { font-size:1.2em; }
+  label.field-label { display:block; font-size:0.9rem; font-weight:600; color:var(--text); margin-bottom:6px; }
+  select, input[type="text"], input[type="password"] { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:0.95rem; font-family:inherit; color:var(--text); background:#FAFDFB; transition:border 0.2s; appearance:none; }
+  select:focus, input:focus { outline:none; border-color:var(--primary-light); box-shadow:0 0 0 3px rgba(82,183,136,0.15); }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width: 560px) { .field-row { grid-template-columns:1fr; } }
+  .q-header { display:grid; grid-template-columns:1fr 70px 70px 70px 70px; gap:4px; padding:10px 12px; background:var(--primary); color:white; border-radius:10px 10px 0 0; font-size:0.82rem; font-weight:600; text-align:center; margin-top:4px; }
+  .q-header .q-label { text-align:left; }
+  .q-row { display:grid; grid-template-columns:1fr 70px 70px 70px 70px; gap:4px; padding:12px 12px; align-items:center; border-bottom:1px solid var(--border); transition:background 0.15s; }
+  .q-row:last-child { border-bottom:none; border-radius:0 0 10px 10px; }
+  .q-row:nth-child(even) { background:#F3FAF6; }
+  .q-row:hover { background:#E8F5EE; }
+  .q-num { font-size:0.78rem; font-weight:700; color:var(--primary); white-space:nowrap; margin-right:4px; }
+  .q-text { font-size:0.9rem; color:var(--text); line-height:1.45; }
+  .q-cell { display:flex; align-items:center; justify-content:center; }
+  .q-row input[type="radio"] { display:none; }
+  .q-row label.radio-lbl { width:30px; height:30px; border:2px solid var(--border); border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--muted); transition:all 0.18s; user-select:none; }
+  .q-row input[type="radio"]:checked + label.radio-lbl { background:var(--primary); border-color:var(--primary); color:white; box-shadow:0 2px 8px rgba(45,106,79,0.3); }
+  #result-section { display:none; }
+  .score-display { text-align:center; padding:28px 16px; }
+  .score-ring { width:132px; height:132px; border-radius:50%; margin:0 auto 16px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:2.4rem; font-weight:800; color:white; box-shadow:0 8px 32px rgba(0,0,0,0.18); transition:background 0.4s; }
+  .score-ring .score-label { font-size:0.72rem; font-weight:500; margin-top:2px; opacity:0.92; }
+  .stress-level { font-size:1.2rem; font-weight:700; margin-bottom:8px; }
+  .stress-desc { font-size:0.92rem; color:var(--muted); max-width:520px; margin:0 auto 16px; line-height:1.65; }
+  .scale-bar { display:flex; border-radius:40px; overflow:hidden; height:18px; margin:16px 0 6px; box-shadow:inset 0 1px 4px rgba(0,0,0,0.1); }
+  .scale-bar div { flex:1; }
+  .scale-labels { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); }
+  .advice-card { border-radius:12px; padding:18px; margin-top:16px; text-align:left; border-left:4px solid; }
+  .advice-card h3 { font-size:0.95rem; font-weight:700; margin-bottom:10px; }
+  .advice-card ul { padding-left:18px; font-size:0.88rem; line-height:1.8; }
+  .encourage { background:linear-gradient(135deg,#E8F5EE,#D8F3E8); border-radius:12px; padding:16px 18px; margin-top:14px; font-size:0.9rem; color:var(--primary); line-height:1.7; border:1px solid var(--soft); }
+  .scoring-table { width:100%; border-collapse:collapse; font-size:0.85rem; margin-top:10px; }
+  .scoring-table th { background:var(--primary); color:white; padding:8px 12px; text-align:left; }
+  .scoring-table td { padding:8px 12px; border-bottom:1px solid var(--border); }
+  .scoring-table tr:nth-child(even) td { background:#F3FAF6; }
+  .dot { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+  .contact-box { background:linear-gradient(135deg,#FFF3E0,#FFE0B2); border-radius:12px; padding:16px 18px; border:1px solid #FFCC80; margin-top:14px; }
+  .contact-box h3 { font-size:0.95rem; font-weight:700; color:#E65100; margin-bottom:10px; }
+  .contact-item { display:flex; align-items:center; gap:10px; padding:8px 10px; background:white; border-radius:8px; margin-bottom:8px; border:1px solid #FFE0B2; }
+  .contact-icon { font-size:1.3em; }
+  .contact-detail { font-size:0.88rem; }
+  .contact-detail strong { display:block; font-weight:700; color:var(--text); }
+  .contact-detail span { color:var(--muted); font-size:0.82rem; }
+  .btn-submit { width:100%; padding:15px; background:linear-gradient(135deg,var(--primary),#1B4332); color:white; border:none; border-radius:12px; font-size:1rem; font-weight:700; cursor:pointer; font-family:inherit; transition:transform 0.15s,box-shadow 0.15s; box-shadow:0 4px 16px rgba(45,106,79,0.3); }
+  .btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(45,106,79,0.35); }
+  .btn-submit:disabled { opacity:0.62; cursor:not-allowed; }
+  .btn-reset { width:100%; padding:12px; background:transparent; color:var(--primary); border:2px solid var(--primary); border-radius:12px; font-size:0.95rem; font-weight:600; cursor:pointer; font-family:inherit; margin-top:10px; transition:all 0.15s; }
+  .btn-reset:hover { background:var(--primary); color:white; }
+  #admin-section { display:none; }
+  .admin-login { background:#1B2B1F; color:white; border-radius:14px; padding:28px 24px; margin-top:30px; }
+  .admin-login h2 { font-size:1rem; font-weight:700; margin-bottom:14px; color:var(--accent); }
+  .admin-login input { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:white; padding:10px 14px; border-radius:8px; width:100%; font-size:0.9rem; font-family:inherit; margin-bottom:10px; }
+  .admin-login input::placeholder { color:rgba(255,255,255,0.5); }
+  .btn-admin { background:var(--accent); color:#1B2B1F; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer; font-family:inherit; font-size:0.9rem; }
+  .btn-admin-link { background:none; border:none; color:var(--accent); font-size:0.82rem; cursor:pointer; text-decoration:underline; margin-top:20px; display:block; text-align:center; font-family:inherit; }
+  .chart-container { margin-top:20px; }
+  .chart-title { font-size:0.95rem; font-weight:700; color:var(--primary); margin-bottom:12px; }
+  .bar-chart { display:flex; align-items:flex-end; gap:8px; height:200px; padding:0 4px; }
+  .bar-group { display:flex; flex-direction:column; align-items:center; flex:1; }
+  .bar { width:100%; border-radius:6px 6px 0 0; min-height:4px; transition:height 0.6s ease; position:relative; cursor:pointer; }
+  .bar:hover::after { content:attr(data-count); position:absolute; top:-28px; left:50%; transform:translateX(-50%); background:var(--text); color:white; padding:2px 8px; border-radius:4px; font-size:0.75rem; white-space:nowrap; }
+  .bar-label { font-size:0.72rem; text-align:center; margin-top:4px; color:var(--muted); line-height:1.3; }
+  .bar-count { font-size:0.8rem; font-weight:700; color:var(--text); margin-bottom:2px; }
+  .stats-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+  .stat-box { background:var(--bg); border-radius:10px; padding:14px; text-align:center; border:1px solid var(--border); }
+  .stat-box .num { font-size:1.8rem; font-weight:800; color:var(--primary); }
+  .stat-box .lbl { font-size:0.78rem; color:var(--muted); margin-top:4px; }
+  .history-wrap { overflow-x:auto; margin-top:16px; }
+  .history-table { width:100%; border-collapse:collapse; font-size:0.78rem; min-width:560px; }
+  .history-table th { background:var(--primary); color:white; padding:9px 10px; text-align:left; white-space:nowrap; }
+  .history-table td { padding:8px 10px; border-bottom:1px solid var(--border); }
+  .history-table tr:nth-child(even) td { background:#F3FAF6; }
+  .badge { display:inline-block; padding:2px 8px; border-radius:20px; font-size:0.72rem; font-weight:700; white-space:nowrap; }
+  .error-msg { color:var(--danger); font-size:0.85rem; margin-top:8px; display:none; }
+  .question-wrap { border:1px solid var(--border); border-radius:0 0 10px 10px; overflow:hidden; }
+  .progress-bar { height:6px; background:var(--border); border-radius:3px; margin-bottom:16px; overflow:hidden; }
+  .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--primary)); border-radius:3px; transition:width 0.3s; }
+  .q-score-guide { font-size:0.8rem; color:var(--muted); margin-top:8px; line-height:1.6; }
+  .tab-btns { display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap; }
+  .tab-btn { padding:8px 14px; border-radius:8px; border:1.5px solid var(--border); background:white; color:var(--muted); font-size:0.82rem; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+  .tab-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .sync-status { display:none; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; font-size:0.85rem; margin-top:12px; }
+  .sync-status.syncing { background:#EEF7FF; color:#1565C0; border:1px solid #BBDEFB; }
+  .sync-status.success { background:#E8F5E9; color:#2E7D32; border:1px solid #A5D6A7; }
+  .sync-status.error { background:#FFEBEE; color:#C62828; border:1px solid #FFCDD2; }
+  .sync-dot { width:8px; height:8px; border-radius:50%; }
+  .syncing .sync-dot { background:#1565C0; animation:pulse 1s infinite; }
+  .success .sync-dot { background:#2E7D32; }
+  .error .sync-dot { background:#C62828; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .sheets-btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:#0F9D58; color:white; border:none; border-radius:8px; font-size:0.82rem; font-weight:700; cursor:pointer; font-family:inherit; margin-top:10px; text-decoration:none; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-icon">🧠</div>
+  <h1>แบบประเมินสุขภาพจิต (ST-20)</h1>
+  <div class="subtitle">สำหรับนักเรียนมัธยมศึกษา · กรมสุขภาพจิต</div>
+  <div class="note">⚠️ ข้อมูลของท่านใช้เพื่อการศึกษาเท่านั้น และจะถูกเก็บเป็นความลับ ไม่มีการเปิดเผยข้อมูลส่วนบุคคล</div>
+</div>
+<div class="container">
+  <div id="form-section">
+    <div class="card">
+      <div class="card-title"><span>📋</span> ข้อมูลทั่วไป</div>
+      <div class="field-row" style="margin-bottom:16px;">
+        <div>
+          <label class="field-label">เพศ</label>
+          <select id="gender">
+            <option value="">-- เลือกเพศ --</option>
+            <option value="ชาย">ชาย</option>
+            <option value="หญิง">หญิง</option>
+            <option value="LGBTQ+">LGBTQ+</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">ระดับชั้น</label>
+          <select id="grade">
+            <option value="">-- เลือกระดับชั้น --</option>
+            <option value="ม.1-3">มัธยมตอนต้น (ม.1–3)</option>
+            <option value="ม.4-6">มัธยมตอนปลาย (ม.4–6)</option>
+          </select>
+        </div>
+      </div>
+      <div style="color:var(--muted);margin-top:12px;font-size:0.9rem;">วิธีตอบ: กรุณาอ่านข้อความแต่ละข้อแล้วเลือกคำตอบที่ตรงกับความรู้สึกหรือพฤติกรรมของท่านมากที่สุด ในช่วง 2 สัปดาห์ที่ผ่านมา รวมถึงวันนี้</div>
+      <div class="card-title" style="margin-top:8px;"><span>📝</span> แบบประเมิน ST-20</div>
+      <div class="question-wrap">
+        <div class="q-header">
+          <div class="q-label">คำถาม</div>
+          <div>0</div>
+          <div>1</div>
+          <div>2</div>
+          <div>3</div>
+        </div>
+        <div id="question-wrap"></div>
+      </div>
+      <div class="progress-bar" style="margin-top:18px;">
+        <div id="progress-fill" class="progress-fill" style="width:0%"></div>
+      </div>
+      <div id="progress-text" style="font-size:0.9rem; color:var(--muted); margin-top:10px;">ตอบแล้ว 0 / 20 ข้อ</div>
+      <button class="btn-submit" style="margin-top:18px;" onclick="submitForm()">✅ ส่งแบบประเมิน</button>
+    </div>
+  </div>
+  <div id="result-section" class="card" style="display:none;">
+    <div class="card-title"><span>📈</span> ผลคะแนนของคุณ</div>
+    <div class="score-display">
+      <div id="score-ring" class="score-ring">0<span class="score-label">คะแนน</span></div>
+      <div id="level-label" class="stress-level"></div>
+      <div id="level-desc" class="stress-desc"></div>
+      <div class="scale-bar">
+        <div style="background:#52B788"></div>
+        <div style="background:#F9C74F"></div>
+        <div style="background:#F4A261"></div>
+        <div style="background:#E63946"></div>
+      </div>
+      <div class="scale-labels"><span>0</span><span>12</span><span>20</span><span>28</span><span>60</span></div>
+      <div id="advice-card" class="advice-card" style="margin-top:18px;">
+        <h3 id="advice-title"></h3>
+        <ul id="advice-list"></ul>
+      </div>
+      <div id="encourage-text" class="encourage"></div>
+      <div class="contact-box" style="margin-top:16px;">
+        <h3>📞 สายด่วนสุขภาพจิตฉุกเฉิน</h3>
+        <div class="contact-item">
+          <span class="contact-icon">🆘</span>
+          <div class="contact-detail"><strong>กรมสุขภาพจิต โทร. 1323</strong><span>บริการตลอด 24 ชั่วโมง</span></div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">💚</span>
+          <div class="contact-detail"><strong>Line Official: @smileconnect</strong><span>ปรึกษาปัญหาสุขภาพจิตออนไลน์</span></div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">🏥</span>
+          <div class="contact-detail"><strong>กรมสุขภาพจิต โทร. 0-2149-5555</strong><span>วันจันทร์–ศุกร์ เวลาราชการ</span></div>
+        </div>
+      </div>
+      <button class="btn-reset" style="margin-top:20px;" onclick="resetForm()">🔄 ทำแบบประเมินใหม่อีกครั้ง</button>
+    </div>
+  </div>
+  <div id="admin-login-box" class="admin-login" style="display:none;">
+    <h2>🔐 เข้าสู่ระบบดูสถิติ (สำหรับผู้ดูแลระบบเท่านั้น)</h2>
+    <input type="password" id="admin-pass" placeholder="รหัสผ่านผู้ดูแลระบบ" onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="btn-admin" style="margin-top:10px;" onclick="adminLogin()">เข้าสู่ระบบ</button>
+    <div id="admin-error" style="color:#F4A261;font-size:0.82rem;margin-top:10px;display:none;">❌ รหัสผ่านไม่ถูกต้อง</div>
+    <div style="color:rgba(255,255,255,0.8);font-size:0.82rem;margin-top:10px;">ใช้รหัสผ่านเดียวสำหรับเข้าสู่ระบบดูสถิติเท่านั้น</div>
+  </div>
+  <div id="admin-section" style="display:none;">
+    <div class="card">
+      <div class="card-title"><span>📊</span> สถิติผู้ทำแบบประเมิน</div>
+      <div class="tab-btns">
+        <button class="tab-btn active" onclick="switchTab('overview', event)">ภาพรวม</button>
+        <button class="tab-btn" onclick="switchTab('chart', event)">กราฟ</button>
+        <button class="tab-btn" onclick="switchTab('history', event)">ประวัติรายบุคคล</button>
+      </div>
+      <div class="tab-content active" id="tab-overview">
+        <div class="stats-grid">
+          <div class="stat-box"><div class="num" id="stat-total">0</div><div class="lbl">ผู้ทำแบบประเมินทั้งหมด</div></div>
+          <div class="stat-box"><div class="num" id="stat-avg">-</div><div class="lbl">คะแนนเฉลี่ย</div></div>
+          <div class="stat-box"><div class="num" id="stat-max">-</div><div class="lbl">คะแนนสูงสุด</div></div>
+          <div class="stat-box"><div class="num" id="stat-min">-</div><div class="lbl">คะแนนต่ำสุด</div></div>
+          <div class="stat-box"><div class="num" id="stat-normal">0</div><div class="lbl">ปกติ / ต่ำ (0–11)</div></div>
+          <div class="stat-box"><div class="num" id="stat-moderate">0</div><div class="lbl">ปานกลาง (12–19)</div></div>
+          <div class="stat-box"><div class="num" id="stat-high">0</div><div class="lbl">สูง (20–27)</div></div>
+          <div class="stat-box"><div class="num" id="stat-severe">0</div><div class="lbl">รุนแรง (≥28)</div></div>
+        </div>
+        <div style="margin-bottom:12px;color:var(--muted);font-size:0.88rem;">สถิติและประวัติทุกส่วนมาจาก Google Sheets แบบรวมศูนย์</div>
+        <button class="btn-reset" onclick="refreshAdminData()">🔄 รีเฟรชข้อมูล</button>
+        <button class="btn-reset" onclick="adminClearData()" style="margin-top:10px;background:#E63946;color:white;border-color:#E63946;">🗑️ ล้างข้อมูลทั้งหมด</button>
+      </div>
+      <div class="tab-content" id="tab-chart">
+        <div class="chart-container">
+          <div class="chart-title">จำนวนผู้ตามระดับความเครียด</div>
+          <div class="bar-chart" id="bar-chart"></div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:16px;font-size:0.78rem;">
+            <span><span class="dot" style="background:#52B788"></span>ปกติ/ต่ำ</span>
+            <span><span class="dot" style="background:#F9C74F"></span>ปานกลาง</span>
+            <span><span class="dot" style="background:#F4A261"></span>สูง</span>
+            <span><span class="dot" style="background:#E63946"></span>รุนแรง</span>
+          </div>
+          <div class="chart-title" style="margin-top:24px;">จำนวนตามระดับชั้น</div>
+          <div class="bar-chart" id="bar-grade"></div>
+          <div class="chart-title" style="margin-top:24px;">จำนวนตามเพศ</div>
+          <div class="bar-chart" id="bar-gender"></div>
+        </div>
+      </div>
+      <div class="tab-content" id="tab-history">
+        <div class="history-wrap">
+          <table class="history-table">
+            <thead><tr><th>#</th><th>วันที่/เวลา</th><th>เพศ</th><th>ระดับชั้น</th><th>คะแนน</th><th>ระดับ</th></tr></thead>
+            <tbody id="history-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="sync-status" class="sync-status syncing">
+        <div class="sync-dot"></div>
+        <span id="sync-msg"></span>
+      </div>
+    </div>
+    <button class="btn-reset" onclick="adminLogout()">ออกจากระบบ</button>
+  </div>
+  <button class="btn-admin-link" onclick="toggleAdminLogin()">🔐 เข้าดูสถิติ (ผู้ดูแลระบบ)</button>
+</div>
+<script>
+// ✏️ วาง URL ของ Google Apps Script Web App ที่นี่ (ดูคำแนะนำด้านล่าง)
+const SHEETS_URL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+// ✏️ เปลี่ยนรหัสผ่าน Admin ตามต้องการ
+const ADMIN_PASSWORD = 'lpk1234567';
+const questions = [
+  "คุณรู้สึกกดดัน หรือมีภาระมากเกินไป",
+  "คุณรู้สึกกังวล หรือไม่สบายใจ",
+  "คุณรู้สึกหงุดหงิด หรือโมโหง่าย",
+  "คุณรู้สึกเหนื่อยล้า หรือหมดแรงโดยไม่มีสาเหตุ",
+  "คุณมีปัญหาในการนอนหลับ (นอนไม่หลับ หรือหลับมากเกินไป)",
+  "คุณรู้สึกว่าตนเองไม่มีคุณค่า หรือด้อยกว่าคนอื่น",
+  "คุณมีความคิดฟุ้งซ่าน ไม่สามารถจดจ่อกับสิ่งที่ทำได้",
+  "คุณรู้สึกสิ้นหวัง หรือมองโลกในแง่ร้าย",
+  "คุณรู้สึกเบื่อหน่าย ไม่อยากทำกิจกรรมที่เคยชอบ",
+  "คุณรู้สึกโดดเดี่ยว หรือขาดการสนับสนุนจากคนรอบข้าง",
+  "คุณมีอาการปวดหัว ปวดท้อง หรือมีอาการทางกายที่ไม่มีสาเหตุชัดเจน",
+  "คุณรับประทานอาหารได้น้อยลง หรือมากขึ้นกว่าปกติมาก",
+  "คุณรู้สึกว่าชีวิตไม่มีความหมาย หรือไม่อยากใช้ชีวิตต่อไป",
+  "คุณมีปัญหาในการเรียน หรือทำกิจกรรมประจำวัน",
+  "คุณรู้สึกกลัว หรือตื่นตระหนกโดยไม่มีสาเหตุ",
+  "คุณหลีกเลี่ยงการพบปะผู้คน หรือกิจกรรมทางสังคม",
+  "คุณรู้สึกว่าตนเองควบคุมชีวิตไม่ได้",
+  "คุณมีความคิดทำร้ายตนเอง หรืออยากหายไปจากโลกนี้",
+  "คุณรู้สึกหมดกำลังใจ หรือท้อแท้กับสิ่งที่เผชิญอยู่",
+  "คุณรู้สึกว่าไม่สามารถรับมือกับปัญหาที่เกิดขึ้นได้"
+];
+const levels = [
+  { min:0, max:11, color:'#52B788', label:'ปกติ / ความเครียดระดับต่ำ', desc:'คะแนนของคุณอยู่ในเกณฑ์ปกติ แสดงว่าคุณสามารถรับมือกับความเครียดได้ดี และมีสุขภาพจิตที่แข็งแรง', advice:['ดูแลสุขภาพกายและใจต่อไป','ออกกำลังกายสม่ำเสมอ','พักผ่อนให้เพียงพอ 7-9 ชั่วโมงต่อคืน','ทำกิจกรรมที่ชอบเพื่อผ่อนคลาย'], encourage:'🌟 ยอดเยี่ยมมาก! คุณมีสุขภาพจิตที่ดี ความสามารถในการรับมือกับความเครียดของคุณเป็นสิ่งที่น่าชื่นชม ดูแลตัวเองต่อไปนะ 💚' },
+  { min:12, max:19, color:'#F9C74F', label:'ความเครียดระดับปานกลาง', desc:'คะแนนของคุณบ่งบอกว่ามีความเครียดในระดับที่ต้องใส่ใจ ควรหาวิธีผ่อนคลายและพูดคุยกับคนที่ไว้ใจ', advice:['ฝึกการหายใจลึกๆ และทำสมาธิ','แบ่งเวลาพักผ่อนระหว่างวัน','พูดคุยกับเพื่อน ครู หรือผู้ปกครองที่ไว้ใจ','ลดกิจกรรมที่ไม่จำเป็นให้น้อยลง','ออกกำลังกายเบาๆ เช่น เดินเล่น โยคะ'], encourage:'💛 ขอบคุณที่ดูแลสุขภาพจิตของตัวเอง คุณกำลังรับมือกับความท้าทายหลายอย่าง อย่าลืมให้เวลากับตัวเองบ้างนะ!' },
+  { min:20, max:27, color:'#F4A261', label:'ความเครียดระดับสูง', desc:'ผลคะแนนบ่งชี้ว่าคุณมีความเครียดในระดับสูง ควรปรึกษาครูแนะแนว นักจิตวิทยา หรือผู้เชี่ยวชาญ', advice:['ปรึกษาครูแนะแนวหรือนักจิตวิทยาของโรงเรียน','โทรหาสายด่วนสุขภาพจิต 1323 ได้ตลอด 24 ชั่วโมง','แจ้งผู้ปกครองหรือครูที่ไว้ใจ','ลดความคาดหวังต่อตัวเองชั่วคราว'], encourage:'🧡 คุณกล้ามากที่ยอมรับว่าตัวเองกำลังเครียด นั่นคือก้าวแรกที่สำคัญ ขอให้รู้ว่ามีคนพร้อมช่วยเหลือคุณเสมอ' },
+  { min:28, max:60, color:'#E63946', label:'ความเครียดระดับรุนแรง', desc:'ผลคะแนนบ่งชี้ว่าคุณมีความเครียดในระดับรุนแรง ต้องการความช่วยเหลือจากผู้เชี่ยวชาญโดยด่วน', advice:['โทร 1323 สายด่วนสุขภาพจิตทันที (24 ชั่วโมง)','แจ้งครู ผู้ปกครอง หรือผู้ใหญ่ที่ไว้ใจทันที','ไปพบจิตแพทย์หรือนักจิตวิทยา','ติดต่อ Line @smileconnect เพื่อรับคำปรึกษา'], encourage:'❤️ ขอบคุณที่ไว้วางใจทำแบบประเมินนี้ คุณไม่ได้อยู่คนเดียว มีคนรักและห่วงใยคุณอยู่เสมอ กรุณาติดต่อขอความช่วยเหลือทันที 💙' }
+];
+const status = document.getElementById('sync-status');
+const statusMsg = document.getElementById('sync-msg');
+const adminError = document.getElementById('admin-error');
+const adminLoginBox = document.getElementById('admin-login-box');
+const adminSection = document.getElementById('admin-section');
+const questionWrap = document.getElementById('question-wrap');
+const resultSection = document.getElementById('result-section');
+const scoreRing = document.getElementById('score-ring');
+const levelLabel = document.getElementById('level-label');
+const levelDesc = document.getElementById('level-desc');
+const adviceTitle = document.getElementById('advice-title');
+const adviceList = document.getElementById('advice-list');
+const encourageText = document.getElementById('encourage-text');
+const progressText = document.getElementById('progress-text');
+const progressFill = document.getElementById('progress-fill');
+const formSection = document.getElementById('form-section');
+questions.forEach((question, index) => {
+  const row = document.createElement('div');
+  row.className = 'q-row';
+  let html = `<div><span class="q-num">ข้อ ${index + 1}.</span><span class="q-text">${question}</span></div>`;
+  for (let value = 0; value < 4; value++) {
+    html += `<div class="q-cell"><input type="radio" name="q${index}" id="q${index}v${value}" value="${value}"><label class="radio-lbl" for="q${index}v${value}">${value}</label></div>`;
+  }
+  row.innerHTML = html;
+  questionWrap.appendChild(row);
+  for (let value = 0; value < 4; value++) {
+    document.getElementById(`q${index}v${value}`).addEventListener('change', updateProgress);
+  }
+});
+function updateProgress() {
+  let answered = 0;
+  for (let i = 0; i < questions.length; i++) {
+    if (document.querySelector(`input[name="q${i}"]:checked`)) answered += 1;
+  }
+  const percent = (answered / questions.length) * 100;
+  progressFill.style.width = `${percent}%`;
+  progressText.textContent = `ตอบแล้ว ${answered} / ${questions.length} ข้อ`;
+}
+function submitForm() {
+  const gender = document.getElementById('gender').value;
+  const grade = document.getElementById('grade').value;
+  const answers = [];
+  for (let i = 0; i < questions.length; i++) {
+    const radio = document.querySelector(`input[name="q${i}"]:checked`);
+    answers.push(radio ? Number(radio.value) : null);
+  }
+  if (!gender || !grade || answers.some(v => v === null)) {
+    alert('กรุณากรอกข้อมูลทั่วไปและทำแบบประเมินให้ครบทุกข้อ');
+    return;
+  }
+  const score = answers.reduce((sum, value) => sum + value, 0);
+  const level = getLevel(score);
+  const record = {
+    date: new Date().toLocaleString('th-TH', { year:'numeric', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' }),
+    gender,
+    grade,
+    score,
+    level: level ? level.label : 'ไม่ระบุ',
+    createdAt: new Date().toISOString()
+  };
+  showResult(record);
+  saveToSheets(record).catch(() => {});
+}
+function showResult(record) {
+  const level = getLevel(record.score);
+  scoreRing.textContent = record.score;
+  scoreRing.style.background = level ? level.color : 'var(--primary)';
+  levelLabel.textContent = level ? level.label : 'ยังไม่ระบุระดับ';
+  levelDesc.textContent = level ? level.desc : 'ไม่สามารถกำหนดระดับได้';
+  adviceTitle.textContent = '💡 คำแนะนำสำหรับคุณ';
+  adviceList.innerHTML = level ? level.advice.map(item => `<li>${item}</li>`).join('') : '<li>กรุณาติดตามอาการและพักผ่อนให้เพียงพอ</li>';
+  encourageText.innerHTML = level ? level.encourage : 'ดูแลตัวเองให้ดีที่สุด และปรึกษาคนใกล้ชิดเมื่อมีความกังวล';
+  updateScoreRing(record.score);
+  formSection.style.display = 'none';
+  resultSection.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function updateScoreRing(score) {
+  scoreRing.style.background = getLevel(score)?.color || 'var(--primary)';
+}
+function getLevel(score) {
+  return levels.find(item => score >= item.min && score <= item.max);
+}
+function resetForm() {
+  formSection.style.display = 'block';
+  resultSection.style.display = 'none';
+  document.getElementById('gender').value = '';
+  document.getElementById('grade').value = '';
+  for (let i = 0; i < questions.length; i++) {
+    for (let value = 0; value < 4; value++) {
+      document.getElementById(`q${i}v${value}`).checked = false;
+    }
+  }
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function toggleAdminLogin() {
+  adminLoginBox.style.display = adminLoginBox.style.display === 'none' ? 'block' : 'none';
+}
+async function adminLogin() {
+  const password = document.getElementById('admin-pass').value;
+  adminError.style.display = 'none';
+  const button = document.querySelector('.btn-admin');
+  button.disabled = true;
+  button.textContent = '⏳ กำลังตรวจสอบ...';
+  await new Promise(resolve => setTimeout(resolve, 200));
+  if (password !== ADMIN_PASSWORD) {
+    adminError.textContent = '❌ รหัสผ่านไม่ถูกต้อง';
+    adminError.style.display = 'block';
+    button.disabled = false;
+    button.textContent = 'เข้าสู่ระบบ';
+    return;
+  }
+  adminError.style.display = 'none';
+  adminLoginBox.style.display = 'none';
+  adminSection.style.display = 'block';
+  button.disabled = false;
+  button.textContent = 'เข้าสู่ระบบ';
+  document.getElementById('admin-pass').value = '';
+  await refreshAdminData();
+}
+function adminLogout() {
+  adminSection.style.display = 'none';
+  adminLoginBox.style.display = 'block';
+  document.getElementById('admin-pass').value = '';
+}
+function switchTab(tabName, event) {
+  const tabs = document.querySelectorAll('.tab-content');
+  const buttons = document.querySelectorAll('.tab-btn');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  buttons.forEach(btn => btn.classList.remove('active'));
+  const target = document.getElementById(`tab-${tabName}`);
+  if (target) target.classList.add('active');
+  if (event && event.currentTarget) event.currentTarget.classList.add('active');
+}
+function setStatus(type, message) {
+  status.className = `sync-status ${type}`;
+  status.style.display = 'flex';
+  statusMsg.textContent = message;
+}
+function hideStatus() {
+  status.style.display = 'none';
+}
+async function saveToSheets(record) {
+  try {
+    setStatus('syncing', '');
+    const response = await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: JSON.stringify(record)
+    });
+    const contentType = response.headers.get('content-type') || '';
+    const result = contentType.includes('application/json') ? await response.json() : { status: 'error', message: await response.text() };
+    if (!response.ok || result.status !== 'success') {
+      throw new Error(result.message || 'ไม่สามารถบันทึกข้อมูลได้');
+    }
+    setStatus('success', '✅ บันทึกข้อมูลลง Google Sheets สำเร็จ!');
+    setTimeout(hideStatus, 2500);
+    return result;
+  } catch (error) {
+    console.error('saveToSheets error:', error);
+    setStatus('error', `⚠️ เกิดข้อผิดพลาดขณะบันทึกข้อมูลลง Google Sheets: ${error.message || error}`);
+    throw error;
+  }
+}
+async function fetchAllRecords() {
+  try {
+    setStatus('syncing', '');
+    const response = await fetch(`${SHEETS_URL}?action=getRecords`, { cache: 'no-store' });
+    const contentType = response.headers.get('content-type') || '';
+    const data = contentType.includes('application/json') ? await response.json() : JSON.parse(await response.text());
+    if (!response.ok || !Array.isArray(data)) {
+      throw new Error('ไม่สามารถอ่านข้อมูลจาก Sheets ได้');
+    }
+    setStatus('success', '✅ โหลดข้อมูลจาก Google Sheets สำเร็จ');
+    setTimeout(hideStatus, 2500);
+    return data;
+  } catch (error) {
+    console.error('fetchAllRecords error:', error);
+    setStatus('error', `⚠️ ไม่สามารถโหลดข้อมูลจาก Google Sheets ได้: ${error.message || error}`);
+    return null;
+  }
+}
+async function refreshAdminData() {
+  const records = await fetchAllRecords();
+  if (records === null) return;
+  renderAdmin(records);
+}
+function sortRecordsNewestFirst(records) {
+  return records.slice().sort((a, b) => {
+    const ta = Date.parse(a.createdAt || a.date || '');
+    const tb = Date.parse(b.createdAt || b.date || '');
+    return (tb || 0) - (ta || 0);
+  });
+}
+function renderAdmin(records) {
+  const recs = sortRecordsNewestFirst(records || []);
+  document.getElementById('stat-total').textContent = recs.length;
+  if (recs.length === 0) {
+    document.getElementById('stat-avg').textContent = '-';
+    document.getElementById('stat-max').textContent = '-';
+    document.getElementById('stat-min').textContent = '-';
+    document.getElementById('stat-normal').textContent = '0';
+    document.getElementById('stat-moderate').textContent = '0';
+    document.getElementById('stat-high').textContent = '0';
+    document.getElementById('stat-severe').textContent = '0';
+  } else {
+    const scores = recs.map(r => Number(r.score) || 0);
+    const avg = scores.reduce((sum, value) => sum + value, 0) / scores.length;
+    document.getElementById('stat-avg').textContent = avg.toFixed(1);
+    document.getElementById('stat-max').textContent = Math.max(...scores);
+    document.getElementById('stat-min').textContent = Math.min(...scores);
+    document.getElementById('stat-normal').textContent = recs.filter(r => Number(r.score) <= 11).length;
+    document.getElementById('stat-moderate').textContent = recs.filter(r => Number(r.score) >= 12 && Number(r.score) <= 19).length;
+    document.getElementById('stat-high').textContent = recs.filter(r => Number(r.score) >= 20 && Number(r.score) <= 27).length;
+    document.getElementById('stat-severe').textContent = recs.filter(r => Number(r.score) >= 28).length;
+  }
+  renderBarChart('bar-chart', [
+    { label: 'ปกติ/ต่ำ\n(0-11)', color: '#52B788', count: recs.filter(r => Number(r.score) <= 11).length },
+    { label: 'ปานกลาง\n(12-19)', color: '#F9C74F', count: recs.filter(r => Number(r.score) >= 12 && Number(r.score) <= 19).length },
+    { label: 'สูง\n(20-27)', color: '#F4A261', count: recs.filter(r => Number(r.score) >= 20 && Number(r.score) <= 27).length },
+    { label: 'รุนแรง\n(28+)', color: '#E63946', count: recs.filter(r => Number(r.score) >= 28).length }
+  ]);
+  renderBarChart('bar-grade', [
+    { label: 'ม.ต้น (ม.1-3)', color: '#2D6A4F', count: recs.filter(r => ('' + (r.grade||'')).includes('1-3') || ('' + (r.grade||'')).includes('ม.1-3')).length },
+    { label: 'ม.ปลาย (ม.4-6)', color: '#52B788', count: recs.filter(r => ('' + (r.grade||'')).includes('4-6') || ('' + (r.grade||'')).includes('ม.4-6')).length }
+  ]);
+  renderBarChart('bar-gender', [
+    { label: 'ชาย', color: '#52B788', count: recs.filter(r => (r.gender || '').toString().trim().toLowerCase() === 'ชาย').length },
+    { label: 'หญิง', color: '#F9C74F', count: recs.filter(r => (r.gender || '').toString().trim().toLowerCase() === 'หญิง').length },
+    { label: 'LGBTQ+', color: '#9B59B6', count: recs.filter(r => (r.gender || '').toString().toLowerCase().includes('lgbt')).length }
+  ]);
+  const tbody = document.getElementById('history-body');
+  tbody.innerHTML = '';
+  if (recs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px;">ยังไม่มีข้อมูล</td></tr>';
+    return;
+  }
+  recs.forEach((record, index) => {
+    const level = getLevel(Number(record.score));
+    const labelText = level ? level.label.split(' ')[0] : record.level || '-';
+    tbody.innerHTML += `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${record.date || '-'}</td>
+        <td>${record.gender || '-'}</td>
+        <td>${record.grade || '-'}</td>
+        <td><strong>${record.score}</strong></td>
+        <td><span class="badge" style="background:${level?.color || '#ccc'}22;color:${level?.color || '#333'};border:1px solid ${level?.color || '#ccc'}55">${labelText}</span></td>
+      </tr>`;
+  });
+}
+function renderBarChart(id, data) {
+  const container = document.getElementById(id);
+  container.innerHTML = '';
+  const maxValue = Math.max(...data.map(item => item.count), 1);
+  data.forEach(item => {
+    const height = Math.max((item.count / maxValue) * 160, item.count > 0 ? 8 : 0);
+    container.innerHTML += `
+      <div class="bar-group">
+        <div class="bar-count">${item.count}</div>
+        <div class="bar" style="height:${height}px;background:${item.color}" data-count="${item.count} คน"></div>
+        <div class="bar-label">${item.label.replace(/\n/g, '<br>')}</div>
+      </div>`;
+  });
+}
+async function adminClearData() {
+  const confirmed = confirm('⚠️ คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้');
+  if (!confirmed) return;
+  try {
+    setStatus('syncing', '');
+    const response = await fetch(`${SHEETS_URL}?action=clearData`, { method: 'GET', cache: 'no-store' });
+    const result = await response.json();
+    if (!response.ok || result.status !== 'success') {
+      throw new Error(result.message || 'เกิดข้อผิดพลาดในการล้างข้อมูล');
+    }
+    setStatus('success', '✅ ล้างข้อมูลทั้งหมดสำเร็จ!');
+    setTimeout(() => {
+      refreshAdminData();
+    }, 1500);
+  } catch (error) {
+    console.error('adminClearData error:', error);
+    setStatus('error', `⚠️ เกิดข้อผิดพลาดในการล้างข้อมูล: ${error.message || error}`);
+  }
+}
+</script>
+</body>
+</html>
